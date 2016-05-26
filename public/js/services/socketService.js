@@ -2,11 +2,13 @@ angular.module('App').service('SocketService', ['$window', '$rootScope', '$log',
 
   var service = this;
 
-  var socket; 
+  var socket = null; 
 
   this.getSocket = function () {
     console.log("getSocket");
-    socket = io.connect(window.location.protocol+"//"+window.location.host+"/game");
+    if(socket==null){
+      socket = io.connect(window.location.protocol+"//"+window.location.host+"/game");
+    }
     return socket;
   }
 

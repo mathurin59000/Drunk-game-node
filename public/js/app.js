@@ -1,7 +1,5 @@
 var App = angular.module( 'App', [ 'ngMaterial', 'ui.router' ] );
 
-console.log('coucou');
-
 App.config(function($stateProvider, $urlRouterProvider) {
   //
   // For any unmatched url, redirect to /state1
@@ -16,6 +14,9 @@ App.config(function($stateProvider, $urlRouterProvider) {
     })
     .state('main', {
       url: "/main",
+      params: {
+        players: null
+      },
       templateUrl: "public/js/templates/main.html",
       controller: "MainController"
     });

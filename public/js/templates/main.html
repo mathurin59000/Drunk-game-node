@@ -1,0 +1,42 @@
+<div class="content">
+	<div class="header">
+		<div layout="row">
+		  <div flex class="title"><h1><b>Next challenge : {{time}} s</b></h1></div>
+		</div>
+	</div>
+
+	<div class="logo">
+		<div layout="row">
+		  <div flex></div>
+		  <div flex></div>
+		  <div flex class="title"><img src="public/img/logo.png" width="200" height="200"></div>
+		  <div flex></div>
+		  <div flex></div>
+		</div>
+	</div>
+
+	<div class="players">
+		<div layout="row" layout-align="space-around center">
+		  <div class="player" class="title" ng-repeat="player in players">
+		  	<div flex><img src="{{player.img}}" class="avatar" width="100" height="100"></div>
+		  	<div flex><h4 class="title">{{player.name}} | {{player.points}} <i class="fa fa-beer"></i></h4></div>
+		  </div>
+		</div>
+	</div>
+
+	<div class="start">
+		<div layout="row">
+		  <div flex class="title">
+		  	<md-button class="md-raised md-warn" ng-click="reset()">Reset</md-button>
+		  </div>
+		</div>
+	</div>
+
+	<div class="footer">
+		<div layout="row" layout-align="center end">
+			<div flex class="title">
+				version 1.0.0 
+			</div>	
+		</div>
+	</div>
+</div>
