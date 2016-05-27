@@ -1,7 +1,8 @@
 <div class="content">
 	<div class="header">
 		<div layout="row">
-		  <div flex class="title"><h1><b>Next challenge : {{time}} s</b></h1></div>
+		  <div flex class="title" ng-if="chronoMode"><h1><b>Next challenge : {{time}} s</b></h1></div>
+		  <div flex class="title" ng-if="!chronoMode"><h1><b>{{currentGame}}</b></h1></div>
 		</div>
 	</div>
 

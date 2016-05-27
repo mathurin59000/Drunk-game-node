@@ -8,6 +8,7 @@ var io = require('socket.io').listen(server).of('/game');
 var path = require('path');
 var allClients = [];
 var ip_server;
+var feedbackPlayers = [];
 
 require('dns').lookup(require('os').hostname(), function (err, add, fam) {
   //console.log('addr: '+add);
@@ -41,6 +42,11 @@ routerApi.get('/', function(req, res) {
 
 routerApi.get('/ip', function(req, res) {
   res.json({ ip: ip_server }); 
+});
+
+routerApi.get('/results', function(req, res) {
+  var tb = feedbackPlayers;
+  res.json({ results: tb }); 
 });
 
 // On renvoie un nombre aléatoire entre une valeur min (incluse) 
@@ -89,15 +95,41 @@ io.on('connection', function(socket){
     socket.broadcast.emit('startGame');
     function chrono(seconds){
     	setTimeout(function(){ 
-    		if(seconds>0){
+    		if(seconds>=0){
     			console.log(seconds);
     			socket.emit('chrono', seconds);
     			chrono(seconds-1);
     		}
+        else{
+          socket.broadcast.emit('startButtons');
+        }
     	}, 1000);
     }
     console.log("chrono lancé !");
-    chrono(120); 
+    chrono(30); 
+  });
+
+  socket.on('endButtons', function(score){
+    console.log("endButtons");
+    allClients.some(function name(element, index, array){
+      if(element.socket==socket){
+        var item = {
+          socket: element.socket,
+          name: element.name,
+          img: element.img,
+          game: 'buttons',
+          score: score
+        };
+        feedbackPlayers.push(item);
+        console.log(feedbackPlayers);
+        return true;
+      }
+    });
+    if(feedbackPlayers.length==allClients.length){
+      console.log("synchro !")
+      socket.broadcast.emit('stopButtons');
+      socket.emit('stopButtons');
+    }
   });
 
   socket.on('reset', function(){
