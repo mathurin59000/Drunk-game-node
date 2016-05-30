@@ -8,7 +8,8 @@ var io = require('socket.io').listen(server).of('/game');
 var path = require('path');
 var allClients = [];
 var ip_server;
-var feedbackPlayers = [];
+var feedbackPlayers = []; //results of the last game
+var scoreGame = []; //current result of the game
 
 require('dns').lookup(require('os').hostname(), function (err, add, fam) {
   //console.log('addr: '+add);
@@ -45,14 +46,63 @@ routerApi.get('/ip', function(req, res) {
 });
 
 routerApi.get('/results', function(req, res) {
-  var tb = feedbackPlayers;
-  res.json({ results: tb }); 
+  console.log('results');
+  console.log(scoreGame);
+  res.json({ results: scoreGame }); 
 });
 
 // On renvoie un nombre aléatoire entre une valeur min (incluse) 
 // et une valeur max (incluse)
 function getRandomArbitrary(min, max) {
 	return Math.floor((Math.random() * max) + min);
+}
+
+function calculateScoreButtons(){
+  scoreGame = [];
+  for(var i=0; i<feedbackPlayers.length-1;i++){
+    for(var j=i+1; j<feedbackPlayers.length; j++){
+      if(feedbackPlayers[i].score<feedbackPlayers[j]){
+        var temp = feedbackPlayers[i];
+        feedbackPlayers[i]=feedbackPlayers[j];
+        feedbackPlayers[j]=temp;
+      }
+    }
+  }
+  console.log(feedbackPlayers);
+  feedbackPlayers.forEach(function name(element, index, array){
+    if(index==0){
+      var item = {
+        name: element.name,
+        score: 0
+      }
+      scoreGame.push(item);
+    }
+    else if(index==1){
+      var item = {
+        name: element.name,
+        score: 1
+      }
+      scoreGame.push(item);
+    }
+    else if(index==2){
+      var item = {
+        name: element.name,
+        score: 2
+      }
+      scoreGame.push(item);
+    }
+    else{
+      var item = {
+        name: element.name,
+        score: 3
+      }
+      scoreGame.push(item);
+    }
+  });
+}
+
+function calculateScoreYoutube(){
+  scoreGame=[];
 }
 
 app.use('/api', routerApi);
@@ -92,7 +142,9 @@ io.on('connection', function(socket){
   });
 
   socket.on('start', function(){
+    console.log('start');
     socket.broadcast.emit('startGame');
+    feedbackPlayers = [];
     function chrono(seconds){
     	setTimeout(function(){ 
     		if(seconds>=0){
@@ -101,7 +153,8 @@ io.on('connection', function(socket){
     			chrono(seconds-1);
     		}
         else{
-          socket.broadcast.emit('startButtons');
+          //socket.broadcast.emit('startButtons');
+          socket.broadcast.emit('startYoutube');
         }
     	}, 1000);
     }
@@ -126,9 +179,34 @@ io.on('connection', function(socket){
       }
     });
     if(feedbackPlayers.length==allClients.length){
-      console.log("synchro !")
+      console.log("synchro !");
+      calculateScoreButtons();
       socket.broadcast.emit('stopButtons');
       socket.emit('stopButtons');
+    }
+  });
+
+  socket.on('endYoutube', function(score){
+    console.log("endYoutube");
+    allClients.some(function name(element, index, array){
+      if(element.socket==socket){
+        var item = {
+          socket: element.socket,
+          name: element.name,
+          img: element.img,
+          game: 'youtube',
+          score: score
+        };
+        feedbackPlayers.push(item);
+        console.log(feedbackPlayers);
+        return true;
+      }
+    });
+    if(feedbackPlayers.length==allClients.length){
+      console.log("synchro !");
+      calculateScoreYoutube();
+      socket.broadcast.emit('stopYoutube');
+      socket.emit('stopYoutube');
     }
   });
 

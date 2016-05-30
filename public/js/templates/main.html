@@ -1,8 +1,8 @@
 <div class="content">
 	<div class="header">
 		<div layout="row">
-		  <div flex class="title" ng-if="chronoMode"><h1><b>Next challenge : {{time}} s</b></h1></div>
-		  <div flex class="title" ng-if="!chronoMode"><h1><b>{{currentGame}}</b></h1></div>
+		  <div flex class="title" ng-if="countdown!=0"><h1><b>Next challenge in {{time}} s</b></h1></div>
+		  <div flex class="title" ng-if="countdown==0"><h1><b>{{currentGame}}</b></h1></div>
 		</div>
 	</div>
 
@@ -11,6 +11,30 @@
 		  <div flex></div>
 		  <div flex></div>
 		  <div flex class="title"><img src="public/img/logo.png" width="200" height="200"></div>
+		  <div flex></div>
+		  <div flex></div>
+		</div>
+	</div>
+
+	<div class="logo">
+		<div layout="row">
+		  <div flex></div>
+		  <div flex></div>
+		  <div flex class="title">Tour {{round}}</div>
+		  <div flex></div>
+		  <div flex></div>
+		</div>
+	</div>
+
+	<div class="logo">
+		<div layout="row">
+		  <div flex></div>
+		  <div flex></div>
+		  <div flex class="title">
+			  <div id="player">
+		      	<div id="placeholder" style="width: 100%;pointer-events: none;"></div>
+		      </div>
+	      </div>
 		  <div flex></div>
 		  <div flex></div>
 		</div>
